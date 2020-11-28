@@ -1,0 +1,20 @@
+---
+galaxy_info:
+  role_name: Proxmox-subscription-nag
+  author: Austin Arbour
+  description: Ansible role to silence the subscription nag on login for Proxmox Backup Server and Virtualization Engine.
+
+  license: MIT (Expat)
+  min_ansible_version: 2.5
+
+  platforms:
+  - name: Debian
+    versions:
+    - jessie
+    - stretch
+    - buster
+
+  tags:
+  - system
+
+dependencies: []

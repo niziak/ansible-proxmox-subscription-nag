@@ -1,0 +1,54 @@
+- name: Get installed packages
+  package_facts:
+    manager: auto
+
+- name: Check if proxmox-backup is installed
+  set_fact:
+    proxmox_installed: pbs
+  when: "'proxmox-backup' in ansible_facts.packages"
+
+- name: Check if proxmox-ve is installed
+  set_fact:
+    proxmox_installed: pve
+  when: "'proxmox-ve' in ansible_facts.packages"
+
+- name: Fail if we are not running a Proxmox product
+  fail:
+    msg: This host is not running a Proxmox product
+  when: proxmox_installed is not defined
+
+- name: Get Proxmox version for backup file
+  set_fact:
+    proxmox_version: "{{ ansible_facts.packages['proxmox-backup'][0].version }}"
+  when: proxmox_installed == "pbs"
+
+- name: Get Proxmox version for backup file
+  set_fact:
+    proxmox_version: "{{ ansible_facts.packages['proxmox-ve'][0].version }}"
+  when: proxmox_installed == "pve"
+
+- name: Check if fix is already applied
+  command: grep -Fq 'if (res === null || res === undefined || !res || false) {' {{ proxmoxlib }}
+  register: check_fixed
+  failed_when: check_fixed.rc > 1
+  check_mode: no
+  ignore_errors: yes
+  changed_when: no
+
+- name: backup up original file
+  copy:
+    remote_src: True
+    src: "{{ proxmoxlib }}"
+    dest: "{{ proxmoxlib }}.bak-{{ proxmox_version }}"
+    force: no
+  when: check_fixed.rc == 1
+
+- name: modify line which performs license check
+  replace:
+    path: "{{ proxmoxlib }}"
+    regexp: res\s*\.data\.status\.toLowerCase\(\) !== 'active'
+    replace: "false"
+  notify: 
+    - restart pveproxy
+    - restart proxmox-backup-proxy
+  when: check_fixed.rc == 1

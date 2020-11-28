@@ -1,0 +1,11 @@
+- name: restart pveproxy
+  service:
+    name: pveproxy
+    state: restarted
+  when: proxmox_installed == "pve"
+
+- name: restart proxmox-backup-proxy
+  service:
+    name: proxmox-backup-proxy
+    state: restarted
+  when: proxmox_installed == "pbs"

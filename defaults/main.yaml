@@ -1,0 +1,2 @@
+# Proxmox Subscription JS file
+proxmoxlib: '/usr/share/javascript/proxmox-widget-toolkit/proxmoxlib.js'
