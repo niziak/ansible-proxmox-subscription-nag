@@ -1,4 +1,4 @@
-## Ansible-PVEDiscordDark
+## Ansible-Proxmox-Subscription-Nag
 
 This role will remove the subscription nag on both Proxmox VE and Proxmox Backup Server.
 
