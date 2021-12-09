@@ -2,10 +2,10 @@
   package_facts:
     manager: auto
 
-- name: Check if proxmox-backup is installed
+- name: Check if proxmox-backup-server is installed
   set_fact:
     proxmox_installed: pbs
-  when: "'proxmox-backup' in ansible_facts.packages"
+  when: "'proxmox-backup-server' in ansible_facts.packages"
 
 - name: Check if proxmox-ve is installed
   set_fact:
@@ -19,7 +19,7 @@
 
 - name: Get Proxmox version for backup file
   set_fact:
-    proxmox_version: "{{ ansible_facts.packages['proxmox-backup'][0].version }}"
+    proxmox_version: "{{ ansible_facts.packages['proxmox-backup-server'][0].version }}"
   when: proxmox_installed == "pbs"
 
 - name: Get Proxmox version for backup file
